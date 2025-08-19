@@ -1,0 +1,20 @@
+<div class="grid">
+  <div class="card" ng-repeat="(key,s) in scripts" ng-if="!s.free">
+    <div class="row">
+      <div>
+        <b>{{s.icon}} {{s.name}}</b>
+        <div class="small">{{s.skill}}</div>
+      </div>
+    </div>
+    <div class="small" ng-if="s.permCost">Permanent: {{s.permCost}} RC</div>
+    <div class="small" ng-if="s.tempCost">Limited ({{(s.tempDuration/60000)|number:0}}m): {{s.tempCost}} RC</div>
+    <div class="small" ng-if="owned(key)">
+      Owned<span ng-if="ownedTemp(key)"> (expires {{ownedTemp(key)|date:'short'}})</span>
+    </div>
+    <div class="row" style="margin-top:6px" ng-if="!owned(key)">
+      <button class="btn" ng-if="s.permCost" ng-click="buyPerm(key)">Buy Permanent</button>
+      <button class="btn" ng-if="s.tempCost" ng-click="buyTemp(key)">Buy Temp</button>
+    </div>
+  </div>
+</div>
+<div class="small" style="margin-top:6px">RuneCoin: <b>{{state.data.economy.rune | number:2}}</b></div>
