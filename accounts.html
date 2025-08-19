@@ -34,6 +34,7 @@
           <th ng-click="setSort('name')">Account</th>
           <th ng-click="setSort('status')">Account Status</th>
           <th ng-click="setSort('totalLevel')">Total Level</th>
+          <th ng-click="setSort('gold')">Net Worth</th>
           <th ng-click="setSort('h24')">Hours (24h)</th>
           <th ng-click="setSort('hall')">Hours (Total)</th>
         </tr>
@@ -55,6 +56,7 @@
           <td>{{acc.name}}</td>
           <td>{{ accountStatus(acc) }}</td>
           <td>{{ totalLevel(acc) }}</td>
+          <td>{{ acc.gold | number:0 }}</td>
           <td>{{ hours24(acc) | number:1 }}</td>
           <td>{{ hoursAll(acc) | number:1 }}</td>
         </tr>
@@ -70,8 +72,7 @@
             <span class="small" ng-if="sel">(Total {{ totalLevel(sel) }})</span>
           </div>
           <div class="small" ng-if="sel">
-            Bots used: {{botCount(sel)}} • Hours botted:
-            {{hoursAll(sel)|number:1}}
+            Bots used: {{botCount(sel)}} • Hours botted: {{hoursAll(sel)|number:1}} • Net Worth: {{sel.gold|number:0}} GP
           </div>
         </div>
         <div

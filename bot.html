@@ -113,13 +113,13 @@
           </div>
         </div>
         <div class="small">
-          ~{{p.s.xpPerMin|number}} xp/hr • {{p.s.costRunePerMin}} RC/min
+          ~{{p.s.xpPerMin|number}} xp/hr • {{p.s.costRunePerMin}} RC/min • {{p.s.goldPerHour|number}} gp/hr
         </div>
         <div class="row" style="margin-top: 6px">
           <div class="small">Start for account:</div>
           <select
             ng-model="selected[p.key]"
-            ng-options="a.id as a.name for a in getSelectableAccounts()"
+            ng-options="a.id as a.name for a in getSelectableAccounts(p.s)"
             style="
               background: var(--bg-soft);
               color: var(--text);
