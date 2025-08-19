@@ -1,0 +1,135 @@
+<div class="split">
+  <div style="overflow: auto">
+    <div class="card" style="margin-bottom: 8px">
+      <div class="row">
+        <div><b>Overall</b></div>
+        <div class="small">
+          Levels Gained: <b>{{overall.levelsGained}}</b> • Bots Used:
+          <b>{{overall.botsUsed}}</b> • RuneCoin:
+          <b>{{overall.rune|number:2}}</b> • Spent: {{overall.spent|number:2}} •
+          Earned: {{overall.earned|number:2}}
+        </div>
+      </div>
+      <div class="small filters" style="margin-top: 6px">
+        <span>Status filter:</span>
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Active" /> Active</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.ActiveBotting" /> Active
+          (Botting)</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Banned" /> Banned</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Sold" /> Sold</label
+        >
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th ng-click="setSort('name')">Account</th>
+          <th ng-click="setSort('status')">Account Status</th>
+          <th ng-click="setSort('totalLevel')">Total Level</th>
+          <th ng-click="setSort('h24')">Hours (24h)</th>
+          <th ng-click="setSort('hall')">Hours (Total)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ng-repeat="acc in sortedAccounts() track by acc.id"
+          ng-click="select(acc)"
+        >
+          <td style="width: 26px">
+            <span
+              class="star"
+              ng-class="{active: acc.fav}"
+              ng-click="$event.stopPropagation(); toggleFav(acc)"
+              title="Favorite"
+              >★</span
+            >
+          </td>
+          <td>{{acc.name}}</td>
+          <td>{{ accountStatus(acc) }}</td>
+          <td>{{ totalLevel(acc) }}</td>
+          <td>{{ hours24(acc) | number:1 }}</td>
+          <td>{{ hoursAll(acc) | number:1 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom: 8px">
+      <div class="row">
+        <div>
+          <div>
+            <b>{{ sel ? sel.name : 'Stat Viewer' }}</b>
+            <span class="small" ng-if="sel">(Total {{ totalLevel(sel) }})</span>
+          </div>
+          <div class="small" ng-if="sel">
+            Bots used: {{botCount(sel)}} • Hours botted:
+            {{hoursAll(sel)|number:1}}
+          </div>
+        </div>
+        <div
+          class="small"
+          ng-if="sel"
+          style="display: flex; gap: 6px; align-items: center"
+        >
+          <button class="btn" ng-click="toggleSold(sel)" title="Toggle Sold">
+            {{ sel.sold ? 'Unmark Sold' : 'Mark Sold' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="skills-grid cols3" ng-if="sel">
+      <div class="skill-tile" ng-repeat="skill in ALL_SKILLS track by skill">
+        <div class="skill-ico">{{skillIcons[skill] || '⭐'}}</div>
+        <div class="skill-name">{{skill}}</div>
+        <div class="skill-lvl">{{ levelForXp(sel.skills[skill] || 0) }}</div>
+        <div class="skill-bar">
+          <span
+            ng-style="{'width': (progress(sel.skills[skill] || 0)*100).toFixed(1) + '%'}"
+          ></span>
+        </div>
+      </div>
+    </div>
+    <div class="card" ng-if="sel" style="margin-top: 8px">
+      <div><b>Bot History</b></div>
+      <table class="wtable" style="margin-top: 6px">
+        <thead>
+          <tr>
+            <th>When</th>
+            <th>Bot</th>
+            <th>Duration</th>
+            <th>RC Spent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="s in (sel.sessions||[]) | orderBy:'-endedAt'">
+            <td>{{ (s.endedAt||s.startedAt) | date:'short' }}</td>
+            <td>
+              {{ (scripts[s.scriptKey] && scripts[s.scriptKey].name) ||
+              s.scriptKey }}
+            </td>
+            <td>
+              {{ (((s.endedAt||Date.now()) - s.startedAt)/60000) | number:1 }}
+              min
+            </td>
+            <td class="amt-out">
+              -{{ ((((s.endedAt||Date.now()) - s.startedAt)/60000) *
+              (s.costPerMin||0)) | number:2 }}
+            </td>
+          </tr>
+          <tr ng-if="!(sel.sessions||[]).length">
+            <td colspan="4" class="small">No sessions yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" ng-if="!sel">Select an account from the table.</div>
+  </div>
+</div>

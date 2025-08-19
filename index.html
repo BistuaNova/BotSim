@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="rsSim">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Runescape Bot Simulator — Fake Desktop (AngularJS)</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script src="randomName.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div id="desktop"></div>
+
+  <!-- Ban overlay -->
+  <div id="ban-overlay">
+    <div class="box">
+      <h2>ACCOUNT BANNED</h2>
+      <p id="ban-msg">Your botting activity triggered a ban wave.</p>
+      <p class="small">Tip: keep risk below 60% and stagger scripts. Randomly take breaks.</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+        <button class="btn" id="newAccountFromBan">Create New Account</button>
+        <button class="btn" id="dismissBan">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <div id="taskbar">
+    <div id="start">Start</div>
+    <div id="task-items"></div>
+    <div id="clock" ng-attr-title="{{clockTitle}}" ng-bind="clockText">00:00:00</div>
+  </div>
+
+  <div id="start-menu">
+    <h4>System</h4>
+    <div class="srow" data-cmd="open:Bot Manager">📜 <span>Bot Manager</span> <span class="hint">Shift+B</span></div>
+    <div class="srow" data-cmd="open:Account Manager">📈 <span>Account Manager</span> <span class="hint">Shift+S</span></div>
+    <div class="srow" data-cmd="open:Browser">🌐 <span>Browser</span> <span class="hint">Shift+W</span></div>
+    <div class="srow" data-cmd="open:Wallet">👛 <span>Wallet</span> <span class="hint">Shift+R</span></div>
+    <div class="srow" data-cmd="open:Notes">🗒️ <span>Notes</span></div>
+    <hr style="border-color: rgba(255,255,255,0.1);">
+    <h4>Settings</h4>
+    <div class="srow" data-cmd="wallpaper">🖼️ <span>Change Wallpaper</span></div>
+    <div class="srow" data-cmd="reset">♻️ <span>Reset Save</span></div>
+  </div>
+
+</body>
+</html>

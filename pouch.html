@@ -1,0 +1,72 @@
+<div class="grid">
+  <div class="card">
+    <div class="row">
+      <h4 style="margin: 0">Pouch</h4>
+      <div class="pill">RC</div>
+    </div>
+    <div class="row">
+      <div class="small">Balance</div>
+      <div><b>{{state.data.economy.rune|number:2}}</b></div>
+    </div>
+    <div class="row">
+      <div class="small">Spent</div>
+      <div>{{state.data.economy.spent|number:2}}</div>
+    </div>
+    <div class="row">
+      <div class="small">Earned</div>
+      <div>{{state.data.economy.earned|number:2}}</div>
+    </div>
+    <div class="small hint">Logs will update live while sessions run.</div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <b>Trade History</b>
+      <div>
+        <select
+          ng-model="filter"
+          style="
+            height: 26px;
+            background: var(--bg-soft);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 0 6px;
+          "
+        >
+          <option value="all">All</option>
+          <option value="in">Incoming</option>
+          <option value="out">Outgoing</option>
+        </select>
+      </div>
+    </div>
+    <table class="wtable" style="margin-top: 6px">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Memo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="t in filtered()">
+          <td>{{t.ts | date:'short'}}</td>
+          <td>{{t.type}}</td>
+          <td ng-class="{'amt-out': t.type==='out', 'amt-in': t.type==='in'}">
+            {{t.amount | number:2}}
+          </td>
+          <td>
+            {{t.accountName}} - {{t.scriptName || '-'}}
+            ({{(t.durationMins||0)|number:1}} min)
+            <span class="small" ng-if="t.kind==='session' && !t.finalized"
+              >• running…</span
+            >
+          </td>
+        </tr>
+        <tr ng-if="!filtered().length">
+          <td colspan="4" class="small">No logs yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

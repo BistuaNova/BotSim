@@ -1,0 +1,148 @@
+<div>
+  <div class="card">
+    <div class="row">
+      <h4 style="margin: 0">Accounts</h4>
+      <div class="small filters">
+        <span>Sort by:</span>
+        <select
+          ng-model="sort.key"
+          ng-options="o.value as o.label for o in sort.options"
+          style="
+            height: 26px;
+            background: var(--bg-soft);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 0 6px;
+          "
+        ></select>
+        <button class="btn" ng-click="toggleDir()">
+          {{sort.dir==='asc'?'▲':'▼'}}
+        </button>
+        <span style="margin-left: 8px">Status:</span>
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Active" /> Active</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.ActiveBotting" /> Active
+          (Botting)</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Banned" /> Banned</label
+        >
+        <label class="chip"
+          ><input type="checkbox" ng-model="status.Sold" /> Sold</label
+        >
+      </div>
+    </div>
+    <div class="acct-header">
+      <div>Account</div>
+      <div>Running</div>
+      <div>Risk</div>
+      <div>Action</div>
+    </div>
+    <div ng-if="!state.data.accounts.length" class="small">
+      No accounts yet. Create one below.
+    </div>
+    <div
+      class="acct-row"
+      ng-repeat="acc in filteredAndSortedAccounts() track by acc.id"
+    >
+      <div>
+        <span
+          class="star"
+          ng-class="{active: acc.fav}"
+          ng-click="toggleFav(acc)"
+          title="Favorite"
+          >★</span
+        >
+        <b>{{acc.name}}</b>
+        <span class="badge danger" ng-if="acc.banned">BANNED</span>
+        <span class="badge" ng-if="acc.sold && !acc.banned">SOLD</span>
+      </div>
+      <div class="small">
+        {{ (acc.bot.running && (scripts[acc.bot.scriptKey].icon+'
+        '+scripts[acc.bot.scriptKey].name)) || 'None' }}
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <div class="meter" style="width: 140px; height: 6px">
+          <span ng-style="{width: (acc.risk| number:0) + '%' }"></span>
+        </div>
+        <div class="small">{{acc.risk|number:0}}%</div>
+      </div>
+      <div>
+        <button
+          class="btn danger"
+          ng-if="acc.bot && acc.bot.running"
+          ng-click="stop(acc)"
+        >
+          Stop
+        </button>
+        <span class="small hint" ng-if="!(acc.bot && acc.bot.running)">—</span>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 6px; gap: 8px">
+      <button class="btn" ng-disabled="!canCreate()" ng-click="newAccount()">
+        New Account
+      </button>
+      <span class="small" ng-if="!canCreate()">New in {{cooldownMins()}}m</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h4>Scripts</h4>
+      <div class="small">Favorites pin to top</div>
+    </div>
+    <div class="grid">
+      <div class="card" ng-repeat="p in scriptPairs track by p.key">
+        <div class="row">
+          <div>
+            <b>{{p.s.icon}} {{p.s.name}}</b>
+            <div class="small">{{p.s.skill}}</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span
+              class="star"
+              ng-class="{active:p.s.fav}"
+              ng-click="toggleScriptFav(p.key)"
+              title="Favorite"
+              >★</span
+            >
+            <div class="pill">Risk +{{p.s.risk}}%</div>
+          </div>
+        </div>
+        <div class="small">
+          ~{{p.s.xpPerMin|number}} xp/hr • {{p.s.costRunePerMin}} RC/min
+        </div>
+        <div class="row" style="margin-top: 6px">
+          <div class="small">Start for account:</div>
+          <select
+            ng-model="selected[p.key]"
+            ng-options="a.id as a.name for a in getSelectableAccounts()"
+            style="
+              background: var(--bg-soft);
+              color: var(--text);
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              border-radius: 8px;
+              height: 28px;
+              padding: 0 6px;
+            "
+          ></select>
+          <button
+            class="btn"
+            ng-disabled="!selected[p.key]"
+            ng-click="start(p.key)"
+          >
+            Start
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="small" style="margin-top: 6px">
+      RuneCoin: <b>{{state.data.economy.rune | number:2}}</b> • Spent:
+      {{state.data.economy.spent|number:2}} • Earned:
+      {{state.data.economy.earned|number:2}}
+    </div>
+  </div>
+</div>
